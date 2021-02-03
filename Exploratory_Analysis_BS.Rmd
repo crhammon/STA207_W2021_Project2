@@ -1,0 +1,85 @@
+---
+title: "Project 2"
+author: "Blake Shaw"
+date: "1/15/2021"
+output: html_document
+---
+
+```{r}
+library(AER)
+data("Fatalities")
+Fatalities$fatalpop <- Fatalities$fatal / Fatalities$pop
+
+
+quant.fatal <- Fatalities[, -c(2,14:16)]
+
+library(gdata)
+agg.state <- aggregate(quant.fatal, by = list(quant.fatal$state), FUN=mean)
+
+
+```
+
+
+Beer tax by state
+```{r}
+
+beertax <- agg.state[, c(1,7)]
+names(beertax)[1] <- "state"
+
+library(usmap)
+library(ggplot2)
+
+
+plot_usmap(data = beertax, values = "beertax",  color = "blue", labels=FALSE, exclude = c("AK", "HI")) + 
+  scale_fill_continuous(low = "white", high = "blue", 
+                        name = "Beer Tax", label = scales::comma) +
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Beer Tax by State")
+
+
+fatal <- agg.state[, c(1,32)]
+names(fatal)[1] <- "state"
+
+plot_usmap(data = beertax, values = "fatal",  color = "blue", labels=FALSE, exclude = c("AK", "HI")) + 
+  scale_fill_continuous(low = "white", high = "blue", 
+                        name = "Fatal per pop", label = scales::comma) +
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Fatal pop by State")
+
+
+
+# Most states have tax below 0.5
+hist(beertax$beertax)
+
+
+agg.state$split <- ifelse(agg.state$beertax < 0.5, 1, 0)
+
+summary(aov(agg.state$fatal ~ agg.state$split))
+cor(agg.state$fatalpop, agg.state$beertax)
+
+plot(agg.state$fatalpop ~ agg.state$beertax)
+
+```
+
+
+Miles driven per driver by state
+```{r}
+
+miles <- agg.state[, c(1,13)]
+
+names(miles)[1] <- "state"
+
+plot_usmap(data = miles, values = "miles",  color = "blue", labels=FALSE, exclude = c("AK", "HI")) + 
+  scale_fill_continuous(low = "white", high = "blue", 
+                        name = "Avg Miles driven per driver", label = scales::comma) +
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Avg Miles driven per driver by state")
+
+
+
+```
+
+
