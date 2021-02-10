@@ -50,11 +50,12 @@ STAR_G1 = as.data.frame(STAR_Stud[,c("stdntid",
                        "birthmonth",
                        "birthday",
                        "birthyear",
-                       "g1schid", # school ID?
-                       "g1tchid", # teacher ID?
+                       "g1schid", 
+                       "g1tchid", 
                        "g1classsize",
                        "g1classtype",
-                       "g1tmathss")]) # assuming this stands for scaled score (ss)
+                       "g1tmathss")])
+
 # get complete cases
 RowsTotal = nrow(STAR_G1)
 STAR_G1 = STAR_G1[complete.cases(STAR_G1[,c("g1schid",
