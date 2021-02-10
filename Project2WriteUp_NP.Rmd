@@ -1,0 +1,52 @@
+---
+title: "Project 2 Modeling"
+author: "Noah Perry"
+date: "2/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Statistical Approach
+
+Our end goal is to find a policy suggestion that can decrease traffic fatalities. However, the Fatalities dataset primarily contains variables related to alcohol-related policies. Among the various measures of vehicle fatalities in our data, we choose alcohol-involved vehicle fatalities per 100,000 people in the population `afatal/pop*100000` as the response variable as it is the metric of fatalities that is most closely-related to the set of explanatory variables we have to choose from. We use alcohol fatalities per 100,000 instead of per capita for ease of interpretation of the coefficients. Furthermore, alcohol-involved vehicle fatalities per 100,000 has a strong positive correlation with the total vehicle fatalities per 100,000. Therefore, we do not expect the choice of response variable to substantively affect our conclusions.
+
+We consider two **three?** different groups of explanatory variables: state fixed effect **year fixed effects?**, and various policy-related variables. We choose to include state fixed effects in our model to account for the variation in a multitude of state-specific factors that are not included in our data such as climate, geography, and culture. For example, high levels of alcohol consumption in New York City, where there is easy access to public transportation, may present less of a threat to road safety than in rural Wisconsin where it may be more likely to result in drunk driving. Then, we included the various policy-related variables in our data: `beertax`, `drinkage`, `breath`, `jail`, and `service` to determine if there is any evidence that these policies are associated with lower fatalities.
+
+
+## Results
+
+**Regression Results**
+```{r, include = FALSE}
+data(Fatalites, package = "AER")
+fit1 <- lm(I(afatal/pop*100000) ~ beertax + drinkage + breath + jail 
+          + service + state, 
+          data = Fatalities)
+
+
+# include year??
+fit1_yr <- lm(I(afatal/pop*100000) ~ beertax + drinkage + breath + jail 
+          + service + state + year, 
+          data = Fatalities)
+
+summary(fit1)$coefficients[1:6,]
+  # not reporting states
+```
+
+From the table of coefficients above, we see that among the only policy-related variable with a negative statistically significant estimated coefficient at the 5 percent significance level is `beertax`. Thus, we conclude that the policy that is most strongly associated with a decrease in alcohol-related fatalities is an increase in beer tax. We can interpret the coefficient on the `beertax` variable as holding all else equal, a one unit increase in the tax on a case of beer on average is associated with a decrease of 2.92 in alcohol-related fatalities per 100,000. 
+
+As an additional sensititity, I try running model with the same set of explanatory variables but using the vehicle fatalities per 100,000 as the response variable instead of alcohol-related fatalities per 100,000.
+
+```{r, include = FALSE}
+data(Fatalites, package = "AER")
+fit_2 <- lm(I(fatal/pop*100000) ~ beertax + drinkage + breath + jail 
+          + service + state, 
+          data = Fatalities)
+
+summary(fit_2)$coefficients[1:6,]
+  # not reporting states
+```
+
+As seen in the table above, the results are not substantively different from our main model, which indicates that our results are not sensitive to the choice of response variable.
