@@ -22,7 +22,6 @@ try(dev.off(),silent=TRUE)
 
 # load packages
 library(tidyverse)
-# library(dplyr)
 library(haven)
 library(car)
 library(gtsummary)
@@ -119,23 +118,29 @@ Investigate relationships between variables of interest and fatalities
 
 # Statistical Approach
 
-There are three main linear regression methods for analyzing longitudinal data: 1) fixed effects (FE), 2) random effects (RE), and 3) pooled ordinary least squares (OLS) (Dougherty, 2007). The third may only be used if the control variables are exhaustively comprehesive so that they capture all of the relevant variation between the entities (states), which is certainly not the case here (Dougherty, 2007). The second (RE) may be used when the observation in the data consist of a random sample from a larger population; since the entities in this case are not randomly selected states this rules out using RE regression (Dougherty, 2007). The first (FE) is highly attractive in that it allows for the elimination of unobserved, time-invariant heterogeneity between entities that might induce bias in the regression (Dougherty, 2007). There are three versions of FE linear regression, they are 1) within-groups, 2) first differences, and 3) least squares dummy variable (LSDV) (Dougherty, 2007). This analysis uses the third option, which is technically equivalent to the first, due to ease of implementation and interpretation of results in R. The standard specification of a linear longitudinal model is given by Dougherty (2007):
+There are three main linear regression methods for analyzing longitudinal data: 1) fixed effects (FE), 2) random effects (RE), and 3) pooled ordinary least squares (OLS) (Dougherty, 2007). The third may only be used if the control variables are exhaustively comprehesive so that they capture all of the relevant variation between the entities (states), which is certainly not the case here (Dougherty, 2007). The second (RE) may be used when the observations in the data consist of a random sample from a larger population; since the entities in this case are not randomly selected states this rules out using RE regression (Dougherty, 2007). The first (FE) is highly attractive in that it allows for the elimination of unobserved, time-invariant heterogeneity between entities that might induce bias in the regression (Dougherty, 2007). There are three versions of FE linear regression, they are 1) within-groups, 2) first differences, and 3) least squares dummy variable (LSDV) (Dougherty, 2007). This analysis uses the third option, which is technically equivalent to the first, due to ease of implementation and interpretation of results in R. The standard specification of a linear longitudinal model is given by Dougherty (2007):
 
 $Y_{it} = \beta_1 + \sum^{k}_{j=2}\beta_jX_{jit}+ \sum^{s}_{p=1}\gamma_pZ_{pi} + \delta t + \epsilon_{it}$
 
 where "Y is the dependent variable, $X_{j}$ are observed explanatory variables, and the $Z_{p}$ are unobserved explanatory variables" (Dougherty, 2007). The index $i$ indicates the entity, $t$ indicates the time period, $j$ and $p$ indicate different explanatory variables, $\delta t$ is a trend term to allow the intercept to shift over time and $\epsilon_{it}$ is the disturbance term (Dougherty, 2007). In this analysis a full set of  year dummy variables is included so the trend term is unecessary.
 
+To deal with the $Z_{p}$, which are unobservable, time-invariant characteristics of each state that induce bias, its effects can be lumped into a component of the error term, as shown below.
 
-pick up where I left off, unobserved effect, alpha, launch into FE specific (need method). 
+$Y_{it} = \beta_1 + \sum^{k}_{j=2}\beta_jX_{jit}+ \alpha_i + \delta t + \epsilon_{it}$
 
+With
 
-The drawbacks to this method are that of course time-invariant characteristics cannot be investigated,
+$\alpha_i = \sum_{p=1}^{s}\gamma_p Z_p$
 
-propose model
+Unfortunately the presence of $\alpha_i$ will in general result in inefficient OLS estimates, but the three methods listed in the beginning of this section overcome this challenge. The chosen method, LSDV OLS, is shown below for the implementation in this analysis.
 
-explain notation
+$Y_{it} = \sum^{k}_{j=2}\beta_jX_{jit}+ \sum_{i=1}^{n}\alpha_i A_i + \epsilon_{it}$
 
-explain why appropriate
+Where the unobserved effect $\alpha_i$ is now distributed as the coefficient of the individual-specific dummy variable. As Dougherty (2007) puts it, "the $\alpha_i A_i$ term represent[s] [the] fixed effect on the dependent variable $Y_i$ for individual $i$. This model can now be estimated using OLS (Dougherty, 2007). Assuming there are no omitted and relevant time-varying explanatory variables, this model will give unbiased results.
+
+Problems with the LSDV regression approach are identical to those of the within-groups method and include 1) inability to estimate the effects of time-invariant explanatory variables, 2) the disturbance term can be small compared to the varation in the differenced values (in within-groups the model is differenced to eliminate the time-invariant explanatory variables), 3) one degree of freedom is lost for every entity (Dougherty, 2007).
+
+The goal of this analysis is to identify policies that affect vehicle fatalities, and ideally make suggestions to policy-makers. Because the data is observational without randomization of treatment, establishing causal relationships is exceedingly difficult. Using FE regression is likely the best option in this case because it eliminates the time-invariant characteristics inherent to each state. Thus, this model is appropriate because it is best able to account for the differences between states that are not controlled for. 
 
 # Results
 
