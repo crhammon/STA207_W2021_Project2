@@ -1,0 +1,155 @@
+---
+title: "Analysis of the Effect of Class Size on First Grade Math Scores: STAR Dataset"
+author: "Charles Hammond (999330564)"
+date: "January 29th, 2021"
+output: bookdown::html_document2
+df_print: paged
+number_sections: yes
+fig_caption: yes
+
+---
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.pos = 'H')
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, message=FALSE, results='hide'}
+# clear environment
+rm(list=ls())
+
+# Clear all plotsfee
+try(dev.off(dev.list()["RStudioGD"]),silent=TRUE)
+try(dev.off(),silent=TRUE)
+
+# load packages
+library(tidyverse)
+# library(dplyr)
+library(haven)
+library(car)
+library(gtsummary)
+```
+
+# Abstract 
+
+# Introduction
+
+# Background 
+
+# Descriptive Analysis 
+
+EXAMPLE of gtsummary
+
+The variables of interest to this analysis are the first grade scaled math scores, first grade teacher ID, first grade school ID, and first grade class type. From the raw data there are records for 11,601 students, but only 6,598 of the students' records are complete for the first grade variables of interest, or 56.8%. The table below summarizes the available data. 
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE, message=FALSE, results='hide'}
+# read in data
+STAR_Stud = read_sav("Proj1DATA\\PROJECT STAR\\STAR_Students.sav")
+
+STAR_G1 = as.data.frame(STAR_Stud[,c("stdntid",
+                       "gender",
+                       "race",
+                       "birthmonth",
+                       "birthday",
+                       "birthyear",
+                       "g1schid", # school ID?
+                       "g1tchid", # teacher ID?
+                       "g1classsize",
+                       "g1classtype",
+                       "g1tmathss")]) # assuming this stands for scaled score (ss)
+# get complete cases
+RowsTotal = nrow(STAR_G1)
+STAR_G1 = STAR_G1[complete.cases(STAR_G1[,c("g1schid",
+                                           "g1tchid", # teacher ID?
+                                           "g1classsize",
+                                           "g1classtype",
+                                           "g1tmathss")]),]
+RowsComplete = nrow(STAR_G1)
+PercComplete = 100*RowsComplete/RowsTotal
+
+# make summary
+STAR_G1$g1schid = as.factor(STAR_G1$g1schid)
+STAR_G1$g1classtype = as.factor(STAR_G1$g1classtype)
+STAR_G1$race = as.character(STAR_G1$race)
+STAR_G1$gender = as.character(STAR_G1$gender)
+
+STAR_G1[STAR_G1$g1classtype==1,'classtype'] = 'Small'
+STAR_G1[STAR_G1$g1classtype==2,'classtype'] = 'Regular'
+STAR_G1[STAR_G1$g1classtype==3,'classtype'] = 'Reg. W/Aide'
+
+STAR_G1[STAR_G1$gender==1,'gender1'] = 'Male'
+STAR_G1[STAR_G1$gender==2,'gender1'] = 'Female'
+
+STAR_G1[(STAR_G1$race==1) & (!is.na(STAR_G1$race)) ,'race1'] = 'White'
+STAR_G1[(STAR_G1$race==2) & (!is.na(STAR_G1$race)) ,'race1'] = 'Black'
+STAR_G1[(STAR_G1$race==3) & (!is.na(STAR_G1$race)) ,'race1'] = 'Asian'
+STAR_G1[(STAR_G1$race==4) & (!is.na(STAR_G1$race)) ,'race1'] = 'Hispanic'
+STAR_G1[(STAR_G1$race==5) & (!is.na(STAR_G1$race)) ,'race1'] = 'Native American'
+STAR_G1[(STAR_G1$race==6) & (!is.na(STAR_G1$race)) ,'race1'] = 'Other'
+
+subset1 = STAR_G1[,c('g1tmathss','g1classsize','birthyear','classtype','race1','gender1')]
+
+table1 = tbl_summary(data = subset1,
+                     by = classtype,
+                     type = all_continuous() ~ "continuous2",
+                     statistic = list(all_continuous() ~ c("{mean} ({sd})",
+                                                           "{median} ({p25},{p75})",
+                                                           "{min}",
+                                                           "{max}"),
+                                      all_categorical() ~ "{n} ({p}%)"),
+                     digits = all_continuous() ~ 1,
+                     label = list(g1tmathss ~ "Scaled Math Scores",
+                                  g1classsize ~ "Class Size",
+                                  birthyear ~ "Birth Year",
+                                  classtype ~ "Class Type",
+                                  race1 ~ "Race",
+                                  gender1 ~ "Gender"),
+                     missing_text = "(Missing)")
+
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE, message=FALSE}
+
+as_gt(table1)
+
+```
+
+Visualize changes in fatalities across years
+
+Investigate relationships between variables of interest and fatalities
+
+# Statistical Approach
+
+propose model
+
+explain notation
+
+explain why appropriate
+
+# Results
+
+associative results
+
+discuss causal interpretation, caveats, etc. is is reasonable?
+
+# Sensitivity Analysis and Regression Diagnostics
+
+# Discussion
+
+# Conclusions
+
+# Acknowledgements {-}
+
+Thank you to my classmates on Piazza for providing lively discussion and helpful answers, including Mary-Francis LaPorte, Yige Luo, Seyoung Jung, Yunhao Yang, and Christina De Cesaris. Thanks to Professor Chen for his very useful lecture notes.
+
+# References {-}
+
+Achilles C. Class Size Policy: The STAR Experiment and Related Class-Size Studies. National Council of Professors of Educational Administration; 2012.
+
+# Appendix A
+
+# Appendix B
+
+# Session info {-}
+
+```{r}
+sessionInfo()
+```
