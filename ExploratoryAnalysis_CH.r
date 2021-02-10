@@ -39,7 +39,7 @@ coef_test(FE_OLS, vcov = "CR1", cluster = "individual", test = "naive-t")
 # coef_test(FE_OLS, vcov = "CR1", cluster = "individual", test = "Satterthwaite")
 
 
-summary(lm(I(afatalper100k)~beertax + year + state - 1, data = Fatalities))
+summary(lm(afatalper100k~beertax + year + state - 1, data = Fatalities))
 
 summary(lm(I(afatalper100k)~beertax + year + state, data = Fatalities))
 

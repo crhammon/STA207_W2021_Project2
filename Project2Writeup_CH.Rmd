@@ -1,7 +1,7 @@
 ---
-title: "Analysis of the Effect of Class Size on First Grade Math Scores: STAR Dataset"
-author: "Charles Hammond (999330564)"
-date: "January 29th, 2021"
+title: "Traffic Fatalities"
+author: "Blake, Charlie, Eshna, Noah"
+date: "February 12, 2021"
 output: bookdown::html_document2
 df_print: paged
 number_sections: yes
@@ -123,7 +123,8 @@ There are three main linear regression methods for analyzing longitudinal data: 
 
 $Y_{it} = \beta_1 + \sum^{k}_{j=2}\beta_jX_{jit}+ \sum^{s}_{p=1}\gamma_pZ_{pi} + \delta t + \epsilon_{it}$
 
-where "Y is the dependent variable, $X_{j}$ are observed explanatory variables, and the $Z_{p}$ are unobserved explanatory variables" (Dougherty, 2007). The index $i$ indicates the entity, $t$ indicates the time period, $j$ and $p$ indicate different explanatory variables, $\delta t$ is a trend term to allow the intercept to shift over time and $\epsilon_{it}$ is the disturbance term (Dougherty, 2007). In this analysis a full set of dummy variables is included so the trend term is unecessary.
+where "Y is the dependent variable, $X_{j}$ are observed explanatory variables, and the $Z_{p}$ are unobserved explanatory variables" (Dougherty, 2007). The index $i$ indicates the entity, $t$ indicates the time period, $j$ and $p$ indicate different explanatory variables, $\delta t$ is a trend term to allow the intercept to shift over time and $\epsilon_{it}$ is the disturbance term (Dougherty, 2007). In this analysis a full set of  year dummy variables is included so the trend term is unecessary.
+
 
 pick up where I left off, unobserved effect, alpha, launch into FE specific (need method). 
 
