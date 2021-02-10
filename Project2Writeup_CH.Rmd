@@ -118,6 +118,8 @@ Investigate relationships between variables of interest and fatalities
 
 # Statistical Approach
 
+There are three main linear regression methods for analyzing longitudinal data: 1) fixed effects (FE), 2) random effects (RE), and 3) pooled ordinary least squares (OLS) (Dougherty, 2007). The third may only be used if the control variables are exhaustively comprehesive so that they capture all of the relevant variation between the entities (states), which is certainly not the case here (Dougherty, 2007). The second (RE) may be used when the observation in the data consist of a random sample from a larger population; since the entities in this case are not randomly selected states this rules out using RE regression (Dougherty, 2007). The first (FE) is highly attractive in that it allows for the elimination of unobserved, time-invariant heterogeneity between entities that might induce bias in the regression (Dougherty, 2007).
+
 propose model
 
 explain notation
@@ -142,7 +144,7 @@ Thank you to my classmates on Piazza for providing lively discussion and helpful
 
 # References {-}
 
-Achilles C. Class Size Policy: The STAR Experiment and Related Class-Size Studies. National Council of Professors of Educational Administration; 2012.
+Dougherty, C. (2007). Introduction to Econometrics (3rd ed., p. 480). Oxford: Oxford University Press.
 
 # Appendix A
 
