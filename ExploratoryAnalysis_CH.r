@@ -29,22 +29,19 @@ plotmeans(afatalper100k~jail, data = Fatalities) # bingo
 # from ^^
 # estimate the fixed effects regression with plm()
 
-FE_OLS = plm(afatalper100k ~ spirits +
-                             beertax +
-                             drinkage +
-                             breath +
-                             jail + 
-                             service +
-                             as.factor(state),
+FE_OLS = plm(afatalper100k ~ beertax + year,
                     data = Fatalities,
-                    index = c("state", "year"), 
-                    model = "within",
-                    effect = 'twoway')
+                    index = c("state"), 
+                    model = "within")
 
 
 coef_test(FE_OLS, vcov = "CR1", cluster = "individual", test = "naive-t")
-coef_test(FE_OLS, vcov = "CR1", cluster = "individual", test = "Satterthwaite")
+# coef_test(FE_OLS, vcov = "CR1", cluster = "individual", test = "Satterthwaite")
 
+
+summary(lm(I(afatalper100k)~beertax + year + state - 1, data = Fatalities))
+
+summary(lm(I(afatalper100k)~beertax + year + state, data = Fatalities))
 
 
 # plot(FE_OLS, which = 1)
