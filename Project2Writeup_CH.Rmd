@@ -118,7 +118,16 @@ Investigate relationships between variables of interest and fatalities
 
 # Statistical Approach
 
-There are three main linear regression methods for analyzing longitudinal data: 1) fixed effects (FE), 2) random effects (RE), and 3) pooled ordinary least squares (OLS) (Dougherty, 2007). The third may only be used if the control variables are exhaustively comprehesive so that they capture all of the relevant variation between the entities (states), which is certainly not the case here (Dougherty, 2007). The second (RE) may be used when the observation in the data consist of a random sample from a larger population; since the entities in this case are not randomly selected states this rules out using RE regression (Dougherty, 2007). The first (FE) is highly attractive in that it allows for the elimination of unobserved, time-invariant heterogeneity between entities that might induce bias in the regression (Dougherty, 2007).
+There are three main linear regression methods for analyzing longitudinal data: 1) fixed effects (FE), 2) random effects (RE), and 3) pooled ordinary least squares (OLS) (Dougherty, 2007). The third may only be used if the control variables are exhaustively comprehesive so that they capture all of the relevant variation between the entities (states), which is certainly not the case here (Dougherty, 2007). The second (RE) may be used when the observation in the data consist of a random sample from a larger population; since the entities in this case are not randomly selected states this rules out using RE regression (Dougherty, 2007). The first (FE) is highly attractive in that it allows for the elimination of unobserved, time-invariant heterogeneity between entities that might induce bias in the regression (Dougherty, 2007). There are three versions of FE linear regression, they are 1) within-groups, 2) first differences, and 3) least squares dummy variable (LSDV) (Dougherty, 2007). This analysis uses the third option, which is technically equivalent to the first, due to ease of implementation and interpretation of results in R. The standard specification of a linear longitudinal model is given by Dougherty (2007):
+
+$Y_{it} = \beta_1 + \sum^{k}_{j=2}\beta_jX_{jit}+ \sum^{s}_{p=1}\gamma_pZ_{pi} + \delta t + \epsilon_{it}$
+
+where "Y is the dependent variable, $X_{j}$ are observed explanatory variables, and the $Z_{p}$ are unobserved explanatory variables" (Dougherty, 2007). The index $i$ indicates the entity, $t$ indicates the time period, $j$ and $p$ indicate different explanatory variables, $\delta t$ is a trend term to allow the intercept to shift over time and $\epsilon_{it}$ is the disturbance term (Dougherty, 2007). In this analysis a full set of dummy variables is included so the trend term is unecessary.
+
+pick up where I left off, unobserved effect, alpha, launch into FE specific (need method). 
+
+
+The drawbacks to this method are that of course time-invariant characteristics cannot be investigated,
 
 propose model
 
