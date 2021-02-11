@@ -28,11 +28,11 @@ colnames(beertax_1982) <- c('state', 'beertax_1982')
 Fatalities <- merge(Fatalities, beertax_1982, by = 'state')
 Fatalities$beertax_change <- Fatalities$beertax - Fatalities$beertax_1982
 
-fit1 <- lm(I(afatal/pop*100000) ~ beertax_change + drinkage + breath + jail 
-          + service + state + year, 
+fit1 <- lm(I(afatal/pop*100000) ~ + state + year + beertax_change + drinkage + breath + jail 
+          + service  - 1, 
           data = Fatalities)
 
-summary(fit1)$coefficients[1:6,]
+summary(fit1)$coefficients[55:59,]
   # not reporting states
 ```
 
@@ -47,11 +47,11 @@ The estimated coefficients on the state and year fixed effects are not shown as 
 As an additional sensitivity, we try running a model with the same set of explanatory variables but using the vehicle fatalities per 100,000 as the response variable instead of alcohol-related fatalities per 100,000.
 
 ```{r, echo = FALSE}
-fit2 <- lm(I(fatal/pop*100000) ~ beertax_change + drinkage + breath + jail 
-          + service + state + year, 
+fit2 <- lm(I(fatal/pop*100000) ~ + state + year + beertax_change + drinkage + breath + jail 
+          + service - 1, 
           data = Fatalities)
 
-summary(fit2)$coefficients[1:6,]
+summary(fit2)$coefficients[55:59,]
   # not reporting states
 ```
 
