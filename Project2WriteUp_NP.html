@@ -371,48 +371,32 @@ summary {
 
 <div id="statistical-approach" class="section level2">
 <h2>Statistical Approach</h2>
-<p>Our end goal is to find a policy suggestion that can decrease traffic fatalities. However, the Fatalities dataset primarily contains variables related to alcohol-related policies. Among the various measures of vehicle fatalities in our data, we choose alcohol-involved vehicle fatalities per 100,000 people in the population <code>afatal/pop*100000</code> as the response variable as it is the metric of fatalities that is most closely-related to the set of explanatory variables we have to choose from. We use alcohol fatalities per 100,000 instead of per capita for ease of interpretation of the coefficients. Furthermore, alcohol-involved vehicle fatalities per 100,000 has a strong positive correlation with the total vehicle fatalities per 100,000. Therefore, we do not expect the choice of response variable to substantively affect our conclusions.</p>
-<p>We consider three different groups of explanatory variables: state fixed effect, year fixed effects, and various policy-related variables. We choose to include state fixed effects in our model to account for the variation in a multitude of state-specific factors that are not included in our data such as climate, geography, and culture. For example, high levels of alcohol consumption in New York City, where there is easy access to public transportation, may present less of a threat to road safety than in rural Wisconsin where it may be more likely to result in drunk driving. Next, we include dummy variables for each year to account for any time trends in the data. Then, we included the various policy-related variables in our data: <code>beertax</code>, <code>drinkage</code>, <code>breath</code>, <code>jail</code>, and <code>service</code> to determine if there is any evidence that these policies are associated with lower fatalities.</p>
+<p>Our end goal is to find a policy suggestion that can decrease traffic fatalities. However, the Fatalities dataset primarily contains variables related to alcohol-related policies. Among the various measures of vehicle fatalities in our data, we choose alcohol-involved vehicle fatalities per 100,000 people in the population as the response variable as it is the metric of fatalities that is most closely-related to the set of explanatory variables we have to choose from. We use alcohol fatalities per 100,000 instead of per capita for ease of interpretation of the coefficients. Furthermore, alcohol-involved vehicle fatalities per 100,000 has a strong positive correlation with the total vehicle fatalities per 100,000. Therefore, we do not expect the choice of response variable to substantively affect our conclusions.</p>
+<p>We consider three different groups of explanatory variables: state fixed effect, year fixed effects, and various policy-related variables. We choose to include state fixed effects in our model to account for the variation in a multitude of state-specific factors that are not included in our data such as climate, geography, and culture. For example, high levels of alcohol consumption in New York City, where there is easy access to public transportation, may present less of a threat to road safety than in rural Wisconsin where it may be more likely to result in drunk driving. Next, we include dummy variables for each year to account for any time trends in the data. Finally, we included the various policy-related variables in our data: change in beer tax (<code>beertax_change</code>), minimum legal drinking age (<code>drinkage</code>), a dummy variable for whether a preliminary breath test law exists (<code>breath</code>), a dummy variable for whether there is a mandatory jail sentence law (<code>jail</code>), and a dummy variable for whether there is a mandatory community service law (<code>service</code>) to determine if there is any evidence that these policies are associated with lower fatalities. We choose to include the change in beer tax in each state instead of the actual beer tax to reduce the multicollinearity between the beer tax variable and state dummies.</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
 <p><strong>Regression Results</strong></p>
-<pre class="r"><code>data(Fatalities, package = &quot;AER&quot;)
-fit1 &lt;- lm(I(afatal/pop*100000) ~ beertax + drinkage + breath + jail 
-          + service + state + year, 
-          data = Fatalities)
-
-summary(fit1)$coefficients[1:6,]</code></pre>
-<pre><code>##                 Estimate Std. Error     t value     Pr(&gt;|t|)
-## (Intercept) 13.871116625  3.6741440  3.77533291 0.0001956651
-## beertax     -2.920800242  1.3800789 -2.11640085 0.0352058323
-## drinkage    -0.006112397  0.1488201 -0.04107239 0.9672678815
-## breathyes   -0.196712302  0.4029563 -0.48817284 0.6258150229
-## jailyes      2.050847304  1.0026092  2.04551014 0.0417525578
-## serviceyes  -1.430809165  1.1492343 -1.24501087 0.2141837970</code></pre>
-<pre class="r"><code>  # not reporting states</code></pre>
-<p>From the table of coefficients above, we see that among the only policy-related variable with a negative statistically significant estimated coefficient at the 5 percent significance level is <code>beertax</code>. Thus, we conclude that the policy that is most strongly associated with a decrease in alcohol-related fatalities is an increase in beer tax. We can interpret the coefficient on the <code>beertax</code> variable as holding all else equal, a one unit increase in the tax on a case of beer on average is associated with a decrease of 2.92 in alcohol-related fatalities per 100,000.</p>
-<p>The estimated coefficient on the dummy variable on <code>jail</code>, which indicates whether the state has a mandatory jail sentence is also individually statistically significant at the 5 percent level. However, the coefficient is positive, which goes against our intuition that increased penalties would be associated with lower fatalities, so we do not make any policy suggestion related to jail sentencing.</p>
-<p>The estimated coefficients on the drinking age (<code>drinkage</code>) and the preliminary breath test law dummy variable (<code>breath</code>) are very small in magnitude and not statistically significant at the 5 percent level. The mandatory community service dummy variable (<code>service</code>) is larger and negative, which catches our attention, but the p-value is also relatively high, so we similarly do not find a convincing association between mandatory community service and decreased alcohol-involved vehicle fatalities.</p>
+<pre><code>##                    Estimate Std. Error     t value    Pr(&gt;|t|)
+## (Intercept)     9.374896675  2.9481902  3.17988186 0.001641239
+## beertax_change -2.920800242  1.3800789 -2.11640085 0.035205832
+## drinkage       -0.006112397  0.1488201 -0.04107239 0.967267882
+## breathyes      -0.196712302  0.4029563 -0.48817284 0.625815023
+## jailyes         2.050847304  1.0026092  2.04551014 0.041752558
+## serviceyes     -1.430809165  1.1492343 -1.24501087 0.214183797</code></pre>
+<p>From the table of coefficients above, we see that among the only policy-related variable with a negative statistically significant estimated coefficient at the 5 percent significance level is the change in beer tax. Thus, we conclude that the policy that is most strongly associated with a decrease in alcohol-related fatalities is an increase in beer tax. We can interpret the coefficient on the <code>beertax_change</code> variable as holding all else equal, a one unit increase in the tax on a case of beer on average is associated with a decrease of 2.92 in alcohol-related fatalities per 100,000.</p>
+<p>The estimated coefficient on the dummy variable on the mandatory jail sentence dummy is also individually statistically significant at the 5 percent level. However, the coefficient is positive, which goes against our intuition that increased penalties would be associated with lower fatalities, so we do not make any policy suggestion related to jail sentencing.</p>
+<p>The estimated coefficients on the minimum legal drinking age and the preliminary breath test law dummy variable are very small in magnitude and not individually statistically significant at the 5 percent level. The mandatory community service dummy variable (<code>service</code>) is larger and negative, which catches our attention, but the p-value is also relatively high, so we do not find a convincing association between mandatory community service and decreased alcohol-involved vehicle fatalities.</p>
 <p>The estimated coefficients on the state and year fixed effects are not shown as there are many and we do not draw any important conclusions related to our question of interest from these coefficients.</p>
-</div>
-<div id="sensitivity-analysis" class="section level2">
-<h2>Sensitivity Analysis</h2>
-<p>As an additional sensitivity, I try running model with the same set of explanatory variables but using the vehicle fatalities per 100,000 as the response variable instead of alcohol-related fatalities per 100,000.</p>
-<pre class="r"><code>fit_2 &lt;- lm(I(fatal/pop*100000) ~ beertax + drinkage + breath + jail 
-          + service + state + year, 
-          data = Fatalities)
-
-summary(fit_2)$coefficients[1:6,]</code></pre>
-<pre><code>##               Estimate Std. Error    t value     Pr(&gt;|t|)
-## (Intercept) 32.0348083  5.3422034  5.9965535 6.295614e-09
-## beertax     -6.7866031  2.0066341 -3.3820831 8.234606e-04
-## drinkage     0.1946877  0.2163843  0.8997308 3.690478e-01
-## breathyes   -0.0586934  0.5858982 -0.1001768 9.202767e-01
-## jailyes     -0.1565380  1.4577933 -0.1073801 9.145654e-01
-## serviceyes   1.3428664  1.6709860  0.8036371 4.222982e-01</code></pre>
-<pre class="r"><code>  # not reporting states</code></pre>
-<p>As seen in the table above, the results are not substantively different from our main model, which indicates that our results are not sensitive to the choice of response variable.</p>
+<p>As an additional sensitivity, we try running a model with the same set of explanatory variables but using the vehicle fatalities per 100,000 as the response variable instead of alcohol-related fatalities per 100,000.</p>
+<pre><code>##                  Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept)    21.5876508  4.2866671  5.0359989 8.596733e-07
+## beertax_change -6.7866031  2.0066341 -3.3820831 8.234606e-04
+## drinkage        0.1946877  0.2163843  0.8997308 3.690478e-01
+## breathyes      -0.0586934  0.5858982 -0.1001768 9.202767e-01
+## jailyes        -0.1565380  1.4577933 -0.1073801 9.145654e-01
+## serviceyes      1.3428664  1.6709860  0.8036371 4.222982e-01</code></pre>
+<p>In the table above we see that the coefficients have changed. However, the policy for which there is strongest evidence of association with decreased fatalities is still an increase in beer tax, which indicates that our conclusions are not sensitive to our choice of alcohol-involved vehicle fatalities per 100,000 instead of overall vehicle fatalities per 100,000 as the response variable.</p>
 </div>
 
 
