@@ -140,15 +140,49 @@ Where the unobserved effect $\alpha_i$ is now distributed as the coefficient of 
 
 Problems with the LSDV regression approach are identical to those of the within-groups method and include 1) inability to estimate the effects of time-invariant explanatory variables, 2) the disturbance term can be small compared to the varation in the differenced values (in within-groups the model is differenced to eliminate the time-invariant explanatory variables), 3) one degree of freedom is lost for every entity (Dougherty, 2007).
 
-The goal of this analysis is to identify policies that affect vehicle fatalities, and ideally make suggestions to policy-makers. Because the data is observational without randomization of treatment, establishing causal relationships is exceedingly difficult. Using FE regression is likely the best option in this case because it eliminates the time-invariant characteristics inherent to each state. Thus, this model is appropriate because it is best able to account for the differences between states that are not controlled for explicitly . 
+The goal of this analysis is to identify policies that affect vehicle fatalities, and ideally make suggestions to policy-makers. Because the data is observational without randomization of treatment, establishing causal relationships is exceedingly difficult. Using FE regression is likely the best option in this case because it eliminates the time-invariant characteristics inherent to each state. Thus, this model is appropriate because it is best able to account for the differences between states that are not controlled for explicitly .
 
 # Results
 
-associative results
+**Regression Results**
+```{r}
+data(Fatalities, package = "AER")
+fit1 <- lm(I(afatal/pop*100000) ~ beertax + drinkage + breath + jail 
+          + service + state + year - 1, 
+          data = Fatalities)
 
-discuss causal interpretation, caveats, etc. is is reasonable?
+summary(fit1)$coefficients[1:6,]
+  # not reporting states
+```
 
-# Sensitivity Analysis and Regression Diagnostics
+From the table of coefficients above, we see that among the only policy-related variable with a negative statistically significant estimated coefficient at the 5 percent significance level is `beertax`. Thus, we conclude that the policy that is most strongly associated with a decrease in alcohol-related fatalities is an increase in beer tax. We can interpret the coefficient on the `beertax` variable as holding all else equal, a one unit increase in the tax on a case of beer on average is associated with a decrease of 2.92 in alcohol-related fatalities per 100,000. 
+
+The estimated coefficient on the dummy variable on `jail`, which indicates whether the state has a mandatory jail sentence is also individually statistically significant at the 5 percent level. However, the coefficient is positive, which goes against our intuition that increased penalties would be associated with lower fatalities, so we do not make any policy suggestion related to jail sentencing. 
+
+The estimated coefficients on the drinking age (`drinkage`) and the preliminary breath test law dummy variable (`breath`) are very small in magnitude and not statistically significant at the 5 percent level. The mandatory community service dummy variable (`service`) is larger and negative, which catches our attention, but the p-value is also relatively high, so we similarly do not find a convincing association between mandatory community service and decreased alcohol-involved vehicle fatalities.
+
+The estimated coefficients on the state and year fixed effects are not shown as there are many and we do not draw any important conclusions related to our question of interest from these coefficients.
+
+## Sensitivity Analysis
+
+As an additional sensitivity, I try running model with the same set of explanatory variables but using the vehicle fatalities per 100,000 as the response variable instead of alcohol-related fatalities per 100,000.
+
+```{r}
+fit_2 = lm(I(afatal/pop*100000) ~ beertax + drinkage + breath + jail 
+          + service + state + year-1, 
+          data = Fatalities)
+
+summary(fit_2)$coefficients[1:6,]
+  # not reporting states
+
+plot(residuals(fit_2))
+
+qqnorm(residuals(fit_2))
+qqline(residuals(fit_2))
+
+```
+
+As seen in the table above, the results are not substantively different from our main model, which indicates that our results are not sensitive to the choice of response variable.
 
 # Discussion
 
@@ -156,7 +190,6 @@ discuss causal interpretation, caveats, etc. is is reasonable?
 
 # Acknowledgements {-}
 
-Thank you to my classmates on Piazza for providing lively discussion and helpful answers, including Mary-Francis LaPorte, Yige Luo, Seyoung Jung, Yunhao Yang, and Christina De Cesaris. Thanks to Professor Chen for his very useful lecture notes.
 
 # References {-}
 
