@@ -31,11 +31,107 @@ library(gtsummary)
 
 # Introduction
 
+With improvements in safety technology and policy, the fatality rate per 100 million vehicle miles driven has decreased from 25 in 1921 to just 2 in 2015 (Holodny, 2015). Although these improvements had a significant effect on fatalities, recently that has not been the case. The engineering firm Sam Schwarz (2020) found a 12.7% increase in the fatalities per vehicle miles traveled from the first six months of 2019 to the first six months of 2020. Not only are improvements in public policy important to the preservation of human life, but motor vehicle crashes also significantly affect the economy. In 2010, the economic costs associated with motor vehicle crashes were estimated to be $242 billion (Blincoe et al., 2015). With an ever-changing transportation grid, it's critical to find what new implementations of policy can reduce the amount of traffic fatalities.
+
+# Background
+
+The the data set utlized in this study is from the US Department of Transportation Fatal Accident Reporting System. It is avaialbe through the R package "AER" which stands for applied econometrics with R. The data set contains information on automobile fatalities from each US state, excluding Hawaii and Alaska, from 1982 to 1988. There are a total of 336 observations, which include 7 annual observations for each of the 48 states. Percentages of each state's Mormon and Baptist population are given. Economic figures such as income per capita, employment per population, and the US unemployment rate and the US employment per population ratio are also listed. The amount of spirits consumed as well as each state's beer tax is given. Information on whether a state has a preliminary breath test law, mandatory jail sentence, and mandatory community service for a DUI. The number of vehicle fatalities for 15-17, 18-20, and 21-24 year old drivers is given, as well as their night time vehicle fatalities and total populations. The total number of alcohol involved vehicle fatalities is listed. Each state contains information on its total population. The average miles per driver is given. Each state's legal drinking age and the percentage of residents in dry counties is listed.
+
+A previous study by Wagenaar, Livingston, and Staras (2015) found that a beer tax increase in the state of Illinois decreased average monthly fatal alcohol-related crashes by 26 percent. This was done by examining the monthly crash data 104 months before the tax increase and 28 months after. Additionally, a meta-analysis by Wagenaar, Salois, and Komro (2009) found that public policies that raise prices of alcohol are an effective means to reduce drinking.
 
 
-# Background 
+# Descriptive Analysis
 
-# Descriptive Analysis 
+```{r mylatextable, results = "asis"}
+library(AER)
+
+data("Fatalities")
+
+library(gtools)
+summary <- 
+  list("Drinking Age" =
+         list("Mean" = ~ round(mean(drinkage), 2)),
+       "Mandatory Community Service" = 
+         list("Count" = ~ table(service)[2]),
+       "Mandatory Jail Sentence" = 
+         list("Count" = ~ table(jail)[2]),
+       "Preliminary Breath Test Law" = 
+         list("Count" = ~ table(breath)[2]))
+
+library(qwraps2)
+library(dplyr)
+options(qwraps2_markup = 'markdown')
+table <- summary_table(group_by(Fatalities, year), summary)
+table
+
+# Seeing which states change in breath testt
+# results <- as.data.frame(rbind(table(Fatalities$state, Fatalities$breath)))
+# changes <- results[which(results$no != 0 & results$yes != 0),]
+```
+
+
+In the table above, we can see that a few states in the early 80s made policy changes to mandatory community serive, mandatory jail sentence, and preliminary breath test laws for drinking while intoxicatred. Additionally, the average minimum drinking age for each state went from about 20 to 21 from 1982 to 1988.
+
+
+```{r}
+library(ggplot2)
+unempus <- Fatalities %>%
+  group_by(year) %>%
+  distinct(unempus)
+
+ggplot(unempus, aes(year, unempus)) +
+  geom_bar(stat = "identity") +
+  xlab("Year") + 
+  ylab("US Unemployment Rate") + 
+  labs(title = "US Unemployment Rate by Year")
+```
+
+```{r}
+emppopus <- Fatalities %>%
+  group_by(year) %>%
+  distinct(emppopus)
+
+ggplot(emppopus, aes(year, emppopus)) +
+  geom_bar(stat = "identity") +
+  xlab("Year") + 
+  ylab("US Employment/Population Ratio") + 
+  labs(title = "US Employment Population Ratio by Year")
+
+```
+
+
+The two figures above show some improvements in the economy from 1982 to 1988. The US Unemployment rate decreases significanlty in this time frame, and the US Employment Population Ratio increases each year. 
+
+
+
+```{r}
+
+library(shiny)
+library(leaflet)
+library(usmap)
+
+beertax <- Fatalities[,c("state", "beertax", "year")]
+
+inputPanel(
+  sliderInput(inputId = "var", label = "Year",
+              min = 1982, max = 1988, value = 1982, sep = "")
+)
+
+renderPlot({
+  data <- beertax[beertax$year == input$var,]
+    
+    plot_usmap(data = data, values = "beertax",  color = "blue", labels=FALSE, exclude = c("AK", "HI")) + 
+  scale_fill_continuous(low = "white", high = "blue", 
+                        name = "Beertax", label = scales::comma) +
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Beertax by State")
+})
+```
+
+
+The figure above shows each state's respective beer tax, with a slider at the top that allows the year's from 1982 to 1988 to be selected. Utah, parts of the North Eastern states, and a few Mid Western states show increases in beer tax. Additionally, the South Western states show the highest initial beer taxes with some increases each year.
+ 
 
 # Statistical Approach
 
@@ -119,8 +215,7 @@ The Residuals vs Fitted plots visually shows that the residuals are mostly aroun
 plot(fit1,which=1)
 ```
 
-In the QQ Plot, we can see that points are mostly in a line at the middle of the graph and curves off with extreme points.
-This means that the data set contains more extreme values than expected when compared to a Normal distribution.
+In the QQ Plot, we can see that points are mostly in a line at the middle of the graph and curves off with extreme points. This means that the data set contains more extreme values than expected when compared to a Normal distribution.
 
 
 ```{r,echo=FALSE,include=TRUE}
