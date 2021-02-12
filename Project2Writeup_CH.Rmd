@@ -253,7 +253,7 @@ plot(fit1,which=2)
 ```
 
 
-It is evident that there are outliers in this plot.
+The plot below of Scale-Location shows that the assumption of heterscedasticity is likely not very likely to be valid in this analysis. The red line would be horizontal and the spread would be uniform if the assumption were true (Kim, 2015).
 
 
 ```{r,echo=FALSE,include=TRUE}
@@ -261,17 +261,20 @@ plot(fit1,which=3)
 ```
 
 
-
+The plot below shows the standardized residuals vs their leverage, with Cook's distance plotted in dashed red lines. There are not significant outliers, which would be located on the other side of the dashed red lines (Kim, 2015).
 
 ```{r,echo=FALSE,include=TRUE}
 plot(fit1,which=5)
 ```
 
-# Discussion
+# Discussion and Conclusions
 
-# Conclusions
+Making suggestions to policy makers with the intent of reducing vehicle traffic fatalities is the central goal of this analysis, but the results presented here likely do not provide sufficient evidence for advocating one policy over another. The fact that many potential explanatory variables are omitted from this analysis is mitigated by the use of the fixed effects approach, which eliminates time-invariant heterogeneity between states, but there are still many missing time-varying variables, the omission of which could bias the results reported here. Additionally, the regression diagnostics results show that the assumptions of ordinary least squares are not strongly supported, including both the normality and homoscedasticity of the errors. Given this, the result that beer tax is significantly involved in reducing alcohol related traffic fatalities is not robust and should be treated with suspicion. Recommendations for making progress in this area include gathering a more comprehensive data set and exploring potential randomized control trials of policies if deemed ethical and where possible, acknowledging the fact that this would be an exceedingly difficult task. 
+
 
 # Acknowledgements {-}
+
+Thank you to Professor Chen for his help during office hours, to the course notes, and to helpful classmates on Piazza.
 
 
 # References {-}
