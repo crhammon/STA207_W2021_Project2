@@ -175,13 +175,14 @@ We consider three different groups of explanatory variables: state fixed effects
 
 $Y_{it} = \beta_{breath}X_{breathe,it}+ \beta_{jail}X_{jail,it} + \beta_{service}X_{service,it} + \beta_{drinkage}X_{drinkage,it} + \beta_{beertax}X_{beertax,it}+ \alpha_i State_i + \gamma_t Year_t + \epsilon_{it}$
 
-Where $i$ indicates the state, $\alpha$ is the state fixed effect, and $\gamma$ is the year fixed effect.
+Where $i$ indicates the state, $\alpha$ is the state fixed effect, and $\gamma$ is the year fixed effect. Because this model is estimated using OLS, other than assuming the functional form of the relationship is truly linear, the assumptions of this model are that 1) the error term has constant variance, 2) the error terms are independent, 3) the error terms are normally distributed, 4) there are no outliers, and 5) there are no missing variables (Chen, 2021).
 
 
 # Results
 
 **Regression Results**
-```{r, echo = FALSE}
+
+```{r, echo = FALSE,include=F}
 data(Fatalities, package = "AER")
 
 beertax_1982 <- Fatalities[Fatalities$year == 1982, c('state', 'beertax')]
@@ -196,6 +197,12 @@ fit1 <- lm(afatal/pop*100000 ~ + state + year + beertax_change + drinkage + brea
 
 summary(fit1)$coefficients[55:59,]
   # not reporting states
+
+```
+
+```{r}
+tbl_regression(fit1,include=c('beertax_change','drinkage','breath','jail','service'))
+
 ```
 
 From the table of coefficients above, we see that among the only policy-related variable with a negative statistically significant estimated coefficient at the 5 percent significance level is the change in beer tax. Thus, we conclude that the policy that is most strongly associated with a decrease in alcohol-related fatalities is an increase in beer tax. We can interpret the coefficient on the `beertax_change` variable as holding all else equal, a one unit increase in the tax on a case of beer on average is associated with a decrease of 2.92 in alcohol-related fatalities per 100,000. 
@@ -214,7 +221,7 @@ As an additional sensitivity, we try running a model with the same set of explan
 As an additional sensitivity, I try running model with the same set of explanatory variables but using the vehicle fatalities per 100,000 as the response variable instead of alcohol-related fatalities per 100,000.
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE,include=F}
 
 fit2 <- lm(fatal/pop*100000 ~ + state + year + beertax_change + drinkage + breath + jail 
           + service - 1, 
@@ -225,22 +232,29 @@ summary(fit2)$coefficients[55:59,]
 
 ```
 
+
+```{r}
+tbl_regression(fit2,include=c('beertax_change','drinkage','breath','jail','service'))
+```
+
 In the table above we see that the coefficients have changed. However, the policy for which there is strongest evidence of association with decreased fatalities is still an increase in beer tax, which indicates that our conclusions are not sensitive to our choice of alcohol-involved vehicle fatalities per 100,000 instead of overall vehicle fatalities per 100,000 as the response variable.
 
-The Residuals vs Fitted plots visually shows that the residuals are mostly around the 0 line. This suggests that the assumption of using a linear relationship is reasonable even though there are outliers present.
+The Residuals vs Fitted plots visually shows that the residuals are scattered mostly evenly about zero, though there is some visible heteroscedasticity seen from left to right as the vertical spread of the residuals increases. This suggests that the assumption of normally distributed errors might be reasonable, but is not perfect.
 
 ```{r,echo=FALSE,include=TRUE}
 plot(fit1,which=1)
 ```
 
-In the QQ Plot, we can see that points are mostly in a line at the middle of the graph and curves off with extreme points. This means that the data set contains more extreme values than expected when compared to a Normal distribution.
+In the quantile-quantile plot of the standardized residuals vs the theoretical normal quantiles, the residuals are clearly not perfectly linear, which challenges the assumption of the normality of the errors, reducing our confidence in the p-values from the regression. We can see that residuals mostly follow a normal distribution in the middle of the graph but curve away from the theoretical quantiles with extreme points. This means that the data set contains more extreme values than expected when compared to a normal distribution.
 
 
 ```{r,echo=FALSE,include=TRUE}
 plot(fit1,which=2)
 ```
 
+
 It is evident that there are outliers in this plot.
+
 
 ```{r,echo=FALSE,include=TRUE}
 plot(fit1,which=3)
@@ -266,9 +280,13 @@ plot(fit1,which=5)
 
 Blincoe, Lawrence, Ted R. Miller, Eduard Zaloshnja, and Bruce A. Lawrence, The Economic and Societal Impact of Motor Vehicle Crashes, 2010 (Revised), Washington, D.C.: National Highway Traffic Safety Administration, DOT HS 812 013, May 2015. As of July 9, 2015: http://www-nrd.nhtsa.dot.gov/Pubs/812013.pdf
 
+Chen S. STA 207 Lecture Notes. UC Davis. 2021.
+
 Dougherty, C. (2007). Introduction to Econometrics (3rd ed., p. 480). Oxford: Oxford University Press.
 
 Holodny, E. (2016, April 20). Traffic fatalities in the US have been Mostly plummeting for decades. https://www.businessinsider.com/traffic-fatalities-historical-trend-us-2016-4?utm_source=copy-link&utm_medium=referral&utm_content=topbar. 
+
+Kim B. Understanding Diagnostic Plots for Linear Regression Analysis. University of Virginia. Research Data Services + Sciences. 2015. https://data.library.virginia.edu/diagnostic-plots/ 
 
 Sam Schwartz. (2021, January 7). First Look at 2020 Traffic Fatality Rates Shows Sharp Spike. Sam Schwartz : Making the Journey Better. https://www.samschwartz.com/staff-reflections/2020/8/31/first-look-at-2020-traffic-fatality-rates-shows-sharp-spike
 
@@ -277,10 +295,6 @@ Wagenaar, A. C., Salois, M. J., & Komro, K. A. (2009). Effects of beverage alcoh
 
 Wagenaar, Alexander C., Melvin D. Livingston, and Stephanie S. Staras. 2015. “Effects of a 2009 Illinois Alcohol Tax Increase on Fatal Motor Vehicle Crashes.” American Journal of Public Health 105 (9): 1880–85.
 
-
-# Appendix A
-
-# Appendix B
 
 # Session info {-}
 
