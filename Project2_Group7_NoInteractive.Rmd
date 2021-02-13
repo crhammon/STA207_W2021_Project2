@@ -6,7 +6,6 @@ output: bookdown::html_document2
 df_print: paged
 number_sections: yes
 fig_caption: yes
-runtime: shiny 
 ---
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(fig.pos = 'H')
@@ -114,33 +113,9 @@ print(ggplot(emppopus, aes(year, emppopus)) +
 ```
 
 
-The two figures above show some improvements in the economy from 1982 to 1988. The US Unemployment rate decreases significantly in this time frame, and the US Employment Population Ratio increases each year. The figure below provides an interactive visualization of the beer tax in each state over the years included in this study. Utah, parts of the North Eastern states, and a few Mid Western states show increases in beer tax over the years. Additionally, the South Western states show the highest initial beer taxes with some increases each year.
+The two figures above show some improvements in the economy from 1982 to 1988. The US Unemployment rate decreases significantly in this time frame, and the US Employment Population Ratio increases each year.
  
 
-```{r, fig.cap='Interactive plot of the beer tax in each state by year.'}
-
-library(shiny)
-library(leaflet)
-library(usmap)
-
-beertax <- Fatalities[,c("state", "beertax", "year")]
-
-    inputPanel(
-    sliderInput(inputId = "var", label = "Year",
-                min = 1982, max = 1988, value = 1982, sep = "")
-  )
-  
-  renderPlot({
-    data <- beertax[beertax$year == input$var,]
-      
-      plot_usmap(data = data, values = "beertax",  color = "blue", labels=FALSE, exclude = c("AK", "HI")) + 
-    scale_fill_continuous(low = "white", high = "blue", 
-                          name = "Beertax", label = scales::comma) +
-    theme(legend.position = "right") + 
-    theme(panel.background = element_rect(colour = "black")) + 
-    labs(title = "Beertax by State")
-  })
-```
 
 
 
